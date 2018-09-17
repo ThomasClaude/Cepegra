@@ -1,0 +1,36 @@
+body {
+  font-family: sans-serif;
+}
+
+input {
+  display: block;
+}
+
+.flexbox {
+  display: flex;
+  padding: 5%;
+  margin: 0 auto;
+}
+
+.add-people,
+.get-people {
+  display: block;
+  width: 30%;
+  padding: 5%;
+  margin: 1%;
+  background-color: #f5f5f5;
+}
+
+.add-people__label,
+.get-people__label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.add-people__input,
+.get-people__input {
+  margin: 10px 0 30px;
+  width: 100%;
+
+}
