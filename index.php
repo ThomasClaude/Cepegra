@@ -10,15 +10,22 @@ try {
     $connection->exec('SET NAMES utf8');
 } catch (PDOException $e) {
     print "Erreur: " . $e->getMessage();
-    exit();
+    exit;
 }
   
 
 if (isset($_POST['insert_newperson'])):
-  $addStatement = $connection->prepare("INSERT INTO stagiaires SET nom = :nom");
+  echo '<pre>';
+  print_r($_FILES);
+  if ($_FILES['avatar']['error']==0):
+    $tmpName = $_FILES['avatar']['tmp_name'];
+    move_uploaded_file($tmpName, 'img/' . $_FILES['avatar']['name']);
+  endif;
+  $addStatement = $connection->prepare("INSERT INTO stagiaires SET nom = :nom, avatar = :avatar");
   $addStatement->execute(
     array(
-      'nom' => $_POST['nom']
+      'nom' => $_POST['nom'],
+      'avatar' => $_FILES['avatar']['name']
     )
   );
   
@@ -88,7 +95,6 @@ endif;
   <title>Demo php</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-  <script src="main.js"></script>
 </head>
 
 
@@ -97,17 +103,31 @@ endif;
   <div class="flexbox">
     <div class="add-people">
       <h2>Add someone</h2>
-      <form method="post">
-        <label for="firstname"
-               class="add-people__label"
+      <form method="post"
+            enctype="multipart/form-data"
+            action="index.php"
+      >
+        <label class="add-people__label"
+               for="nom"
         >
           Name
-          <input type="text"
-                 id="nom"
-                 name="nom"
-                 class="add-people__input"
-          >
         </label>
+        <input type="text"
+                id="nom"
+                name="nom"
+                class="add-people__input"
+        >
+        <label class="add-people__label"
+               for="avatar"
+        >
+          Avatar
+        </label>
+        <input type="file" 
+                name="avatar[]" 
+                id="avatar"
+                multiple
+                class="add-people__input"
+        >
         <select name="id_atelier"
                 id="id_ateliers"
         >
@@ -174,8 +194,12 @@ endif;
   for (let i = 0; i < linkElement.length ; i++) {
     linkElement[i].addEventListener('click', function(e) {
       let stagiaireName = this.getAttribute('data-name');
+      let myElement = this;
+      let myEvent = e;
       if (!confirm('Supprimer ' + stagiaireName)) {
         e.preventDefault();
+        
+        // myElement.dispatchEvent(myEvent);
       }
     });
   }
@@ -183,7 +207,12 @@ endif;
 </script>
 </body>
 
-
+ <?php
+/*
+ if($_POST['login']=='aDmin' AND md5($_POST['pass'])== '1b7ce0742dca60b3193b2066e89316e1
+ ')
+*/
+?>
 
 
 
